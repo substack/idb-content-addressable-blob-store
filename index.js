@@ -90,7 +90,14 @@ CA.prototype.createReadStream = function (opts) {
 };
 
 CA.prototype.exists = function (opts, cb) {
-    this._idb.exists(opts, cb);
+    var self = this;
+    if (typeof opts === 'string') opts = { key: opts };
+    var key = defined(opts.key, 'undefined');
+    self._idb._get(key, function (err, value) {
+        if (err) return cb(err);
+        if (value === undefined) return cb(null, false);
+        self._idb.exists(value, cb);
+    });
 };
 
 CA.prototype.remove = function (opts, cb) {
