@@ -1,5 +1,3 @@
-module.exports = IDB;
-
 var through = require('through2');
 var writeonly = require('write-only-stream');
 var readonly = require('read-only-stream');
@@ -8,7 +6,7 @@ var defined = require('defined');
 var SHA = require('sha.js/sha256')
 var IDB = require('idb-blob-store');
 
-module.exports = IDB;
+module.exports = CA;
 
 function CA (opts) {
     if (!(this instanceof CA)) return new CA(opts);
@@ -18,6 +16,14 @@ function CA (opts) {
 
 CA.prototype.createWriteStream = function (opts, cb) {
     var self = this;
+    if (!opts) opts = {};
+    if (typeof opts === 'function') {
+        cb = opts;
+        opts = {};
+    }
+    if (typeof opts !== 'object') opts = {};
+    if (!cb) cb = function () {};
+    
     var kbytes = window.crypto.getRandomValues(new Uint8Array(32));
     var params = {
         key: Buffer(kbytes).toString('hex'),
@@ -58,7 +64,7 @@ CA.prototype.createWriteStream = function (opts, cb) {
         next();
     }
     function end () {
-        hash = h.digest();
+        hash = h.digest().toString('hex');
         outer.key = hash;
         this.push(null);
     }
