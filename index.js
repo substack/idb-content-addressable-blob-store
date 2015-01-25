@@ -97,7 +97,7 @@ CA.prototype.remove = function (opts, cb) {
     var self = this;
     if (typeof opts === 'string') opts = { key: opts };
     var key = defined(opts.key, 'undefined');
-    self._idb.get(key, function (err, value) {
+    self._idb._get(key, function (err, value) {
         if (err) cb(err)
         else self._idb.remove(value, cb)
     });
