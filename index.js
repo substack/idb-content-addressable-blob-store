@@ -43,7 +43,7 @@ CA.prototype.createWriteStream = function (opts, cb) {
             else create()
         });
         function remove () {
-            self.remove(params.key, function (err) {
+            self._idb.remove(params.key, function (err) {
                 if (err) cb(err)
                 else cb(null, { key: hash, size: meta.size });
             });
