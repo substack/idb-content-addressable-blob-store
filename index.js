@@ -106,6 +106,10 @@ CA.prototype.remove = function (opts, cb) {
     var key = defined(opts.key, 'undefined');
     self._idb._get(key, function (err, value) {
         if (err) cb(err)
-        else self._idb.remove(value, cb)
+        else self._idb.remove(value, function (err1) {
+            self._idb._del(key, function (err2) {
+                cb(err1 || err2)
+            })
+        })
     });
 };
